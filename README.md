@@ -1,4 +1,6 @@
-# QLoRA Multi-Task Fine-tuning for Financial NLP on FLARE Benchmark
+# Parameter-Efficient Fine-Tuning of Meta-Llama-3-8B-Instruct with
+QLoRA for Financial NLP on the FLARE Benchmark: A Comparative
+Analysis
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.1.0-red.svg)](https://pytorch.org/)
@@ -24,7 +26,6 @@ This project implements **task-specific multi-adapter QLoRA** fine-tuning for fi
 
 - **Multi-Adapter Architecture**: Independent LoRA adapter per task
 - **4-bit Quantization**: NF4 quantization with double quantization
-- **Efficient Training**: 75% GPU memory reduction vs full fine-tuning
 - **Comprehensive Tracking**: GPU metrics, training curves, performance plots
 - **Modular Design**: Easy to add/remove tasks and datasets
 
@@ -308,11 +309,11 @@ python scripts/evaluate_task.py \
 |------|-----------|--------|-----------|----------|
 | SA | FPB | F1 | 86.0 | 87.0 |
 | SA | FiQA-SA | F1 | 76.0 | 79.0 |
-| HC | Gold Headlines | Acc | TBD | TBD |
+| HC | Gold Headlines | Acc | - | - |
 | QA | FinQA | EM | 14.65 | 4.0 |
 | QA | ConvFinQA | EM | 40.40 | 20.0 |
 | SMP | Combined | Acc | 57.55 | 54.5 |
-| NER | Fin Agreements | F1 | 59.3 | 69.0 |
+| NER | Fin Agreements | F1 | 69 | 69.0 |
 
 ### Efficiency Metrics
 
@@ -371,19 +372,21 @@ evaluation:
 ## 📝 Citation
 
 ```bibtex
-@article{djagba2024qlora,
-  title={Multi-Adapter QLoRA Fine-tuning for Financial NLP on FLARE Benchmark},
+@article{djagba2025qlora,
+  title={Parameter-Efficient Fine-Tuning of Meta-Llama-3-8B-Instruct with
+QLoRA for Financial NLP on the FLARE Benchmark: A Comparative
+Analysis},
   author={Djagba, P. and Younoussi Saley, A. and Zeleke, A.},
-  year={2024}
+  year={2025}
 }
 ```
 
 ## 📧 Contact
 
-- P. Djagba - djagbapr@msu.edu
+- P. Djagba
 - A. Younoussi Saley - saley.younoussi@aims.ac.rw
-- A. Zeleke - zeleke@msu.edu
+- A. Zeleke
 
 ---
 
-**Note**: Training times are approximate and depend on GPU hardware (tested on A100 40GB).
+**Note**: Training times are approximate and depend on GPU hardware (tested on A100 40GB or plus is preferable).
