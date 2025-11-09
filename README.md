@@ -20,21 +20,19 @@ This project implements **task-specific multi-adapter QLoRA** fine-tuning for fi
 | **HC** - Headline Classification | 1 | Gold News Headlines | r=8, α=16 |
 | **NER** - Named Entity Recognition | 1 | Financial Agreements | r=16, α=32 |
 | **QA** - Question Answering | 2 | FinQA, ConvFinQA | r=16, α=32 |
-| **SMP** - Stock Movement Prediction | 3 | BigData22, ACL18, CIKM18 | r=16, α=32 |
+| **SMP** - Stock Movement Prediction | 3 | BigData22, ACL18, CIKM18 | r=32, α=64 |
 
 ### Key Features
 
 - **Multi-Adapter Architecture**: Independent LoRA adapter per task
 - **4-bit Quantization**: NF4 quantization with double quantization
-- **Comprehensive Tracking**: GPU metrics, training curves, performance plots
 - **Modular Design**: Easy to add/remove tasks and datasets
 
 ## 📁 Project Structure
-
 ```
-qlora-financial-nlp/
+Efficient-Financial-NLP-Fine-Tuning-with-QLoRA/
 ├── configs/
-│   ├── model_config.yaml           # Base model & quantization config
+│   ├── model_config.yaml           # Base model & quantization
 │   └── tasks/
 │       ├── sa_config.yaml          # Sentiment Analysis
 │       ├── hc_config.yaml          # Headline Classification
@@ -42,107 +40,50 @@ qlora-financial-nlp/
 │       ├── qa_config.yaml          # Question Answering
 │       └── smp_config.yaml         # Stock Movement Prediction
 │
-├── data/                           # Raw datasets by task
-│   ├── SA/                         # Sentiment Analysis
-│   │   ├── financial_phrase_bank.csv
-│   │   └── fiqa_sa.csv
-│   ├── HC/                         # Headline Classification
-│   │   └── gold_news_headlines.csv
-│   ├── NER/                        # Named Entity Recognition
-│   │   └── fin_agreements.csv
-│   ├── QA/                         # Question Answering
-│   │   ├── finqa.csv
-│   │   └── convfinqa.csv
-│   └── SMP/                        # Stock Movement Prediction
-│       ├── bigdata22.csv
-│       ├── acl18.csv
-│       └── cikm18.csv
+├── data/
+│   ├── formatted/                  # Llama 3.1 formatted datasets
+│   │   ├── sa/merged/              # Sentiment Analysis
+│   │   ├── hc/merged/              # Headlines
+│   │   ├── ner/merged/             # Named Entity Recognition
+│   │   ├── qa/merged/              # Question Answering
+│   │   └── smp/merged/             # Stock Movement Prediction
+│   ├── dataset_config.json         # Dataset mappings
+│   ├── llama_template.txt          # Chat template
+│   └── metadata.json               # Dataset statistics
 │
 ├── src/
 │   ├── data/
-│   │   ├── __init__.py
-│   │   ├── loaders.py              # Dataset loaders per task
-│   │   └── processors.py           # Task-specific data processors
-│   │       ├── SAProcessor
-│   │       ├── HCProcessor
-│   │       ├── NERProcessor
-│   │       ├── QAProcessor (FinQA + ConvFinQA)
-│   │       └── SMPProcessor
-│   │
+│   │   └── dataset_loader.py       # Load formatted datasets
 │   ├── models/
-│   │   ├── __init__.py
-│   │   ├── qlora_model.py          # QLoRA base model setup
-│   │   └── multi_adapter.py        # Multi-adapter management
-│   │
+│   │   └── qlora_model.py          # QLoRA with BitsAndBytes
 │   ├── training/
-│   │   ├── __init__.py
-│   │   ├── task_trainer.py         # Single task trainer
-│   │   └── multi_task_trainer.py   # Orchestrates all tasks
-│   │
+│   │   ├── trainer.py              # TaskTrainer
+│   │   └── callbacks.py            # Monitoring callbacks
 │   ├── evaluation/
-│   │   ├── __init__.py
-│   │   ├── metrics.py              # Task-specific metrics
-│   │   └── evaluators.py           # Evaluation suite
-│   │       ├── SAEvaluator (Macro F1)
-│   │       ├── HCEvaluator (Accuracy)
-│   │       ├── NEREvaluator (Entity F1)
-│   │       ├── QAEvaluator (EM, F1)
-│   │       └── SMPEvaluator (Accuracy, MCC)
-│   │
+│   │   └── evaluator.py            # SOTAComparableEvaluator
 │   └── utils/
-│       ├── __init__.py
-│       ├── metrics_tracker.py      # GPU & training metrics
-│       ├── visualization.py        # Plot generation
-│       └── checkpoint_manager.py   # Model checkpointing
+│       └── training_monitor.py     # Metrics tracking
 │
 ├── scripts/
-│   ├── download_data.py            # Download FLARE datasets
-│   ├── train_task.py               # Train single task
-│   ├── train_all.py                # Train all tasks
-│   ├── evaluate_task.py            # Evaluate single task
-│   ├── evaluate_all.py             # Full FLARE evaluation
-│   └── generate_paper_outputs.py   # Generate plots & tables
+│   ├── train.py                    # Train single task
+│   ├── train_all.py                # Batch training
+│   ├── eval_model.py               # Evaluate single task
+│   ├── eval_all_models.py          # Batch evaluation
+│   └── verify_datasets.py          # Validate datasets
 │
-├── notebooks/
-│   ├── 01_data_exploration.ipynb   # Explore datasets
-│   ├── 02_single_task_demo.ipynb   # Train single task demo
-│   ├── 03_multi_task_training.ipynb # Multi-task training
-│   └── 04_results_analysis.ipynb   # Analyze results
+├── outputs/
+│   ├── adapters/                   # Trained LoRA adapters
+│   ├── evaluations/                # Evaluation results
+│   └── logs/                       # Training logs
 │
-├── outputs/                        # Training outputs (gitignored)
-│   ├── adapters/                   # Saved LoRA adapters
-│   │   ├── sa_adapter/
-│   │   ├── hc_adapter/
-│   │   ├── ner_adapter/
-│   │   ├── qa_adapter/
-│   │   └── smp_adapter/
-│   ├── checkpoints/                # Training checkpoints
-│   ├── logs/                       # Training logs
-│   └── metrics/                    # Metrics JSON files
+├── results/                        # Results for publication
+│   ├── performance_summary.csv
+│   ├── training_efficiency.csv
+│   └── training_plots/
 │
-├── results/                        # Evaluation results
-│   ├── figures/                    # Generated plots
-│   │   ├── training_curves/
-│   │   ├── gpu_utilization/
-│   │   └── performance_comparison/
-│   └── tables/                     # LaTeX tables
-│
-├── tests/
-│   ├── test_data_loaders.py
-│   ├── test_processors.py
-│   ├── test_models.py
-│   └── test_trainers.py
-│
-├── docs/
-│   ├── SETUP.md                    # Setup guide
-│   ├── TRAINING.md                 # Training guide per task
-│   ├── EVALUATION.md               # Evaluation protocols
-│   └── API.md                      # API documentation
-│
-├── .gitignore
 ├── requirements.txt
-├── setup.py
-├── LICENSE
+├── RESULTS.md                      # Detailed results
+├── SETUP.md                        # Installation guide
 └── README.md
 ```
 
@@ -150,18 +91,17 @@ qlora-financial-nlp/
 
 ### 1. Installation
 
+## Quick Start
+
+### 1. Installation
 ```bash
-# Clone repository
-git clone https://github.com/yourusername/qlora-financial-nlp.git
-cd qlora-financial-nlp
-
-# Create environment
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-
-# Install dependencies
+git clone https://github.com/AbdelkaderYS/Efficient-Financial-NLP-Fine-Tuning-with-QLoRA.git
+cd Efficient-Financial-NLP-Fine-Tuning-with-QLoRA
 pip install -r requirements.txt
 ```
+
+**Requirements**: Python 3.8+, CUDA 11.8+, 8GB+ VRAM (40GB recommended for QA/SMP)
+
 
 ### 2. Download Data
 
@@ -213,17 +153,24 @@ python scripts/evaluate_all.py \
 
 **Sentiment Analysis (SA)**
 - Datasets: FPB, FiQA-SA
-- LoRA: r=8, α=16, dropout=0.1
-- Modules: q_proj, v_proj
+- LoRA: r=8, α=16, dropout=0.05
+- Modules: q_proj, k_proj, v_proj, o_proj
 - Max length: 512
 - Metric: Macro F1
 
 **Headline Classification (HC)**
 - Dataset: Gold News Headlines
 - LoRA: r=8, α=16, dropout=0.1
-- Modules: q_proj, v_proj
+- Modules: q_proj, k_proj, v_proj, o_proj
 - Max length: 512
 - Metric: Accuracy
+
+**Named Entity Recognition (NER)**
+- Dataset: Financial Agreements
+- LoRA: r=16, α=32, dropout=0.1
+- Modules: q_proj, k_proj, v_proj, o_proj
+- Max length: 1024
+- Metric: Entity F1
 
 ### Complex Tasks (Reasoning-based)
 
@@ -242,13 +189,6 @@ python scripts/evaluate_all.py \
 - Metrics: Accuracy, MCC
 
 ### Structured Tasks
-
-**Named Entity Recognition (NER)**
-- Dataset: Financial Agreements
-- LoRA: r=16, α=32, dropout=0.1
-- Modules: q_proj, k_proj, v_proj, o_proj
-- Max length: 1024
-- Metric: Entity F1
 
 ## 💻 Usage Examples
 
@@ -270,7 +210,7 @@ trainer.train_task(
     task="sa",
     datasets=["fpb", "fiqa_sa"],
     epochs=3,
-    batch_size=4
+    batch_size=32
 )
 
 # Save adapter
@@ -305,15 +245,18 @@ python scripts/evaluate_task.py \
 
 ### Performance Summary
 
-| Task | Dataset(s) | Metric | Our QLoRA | Baseline |
-|------|-----------|--------|-----------|----------|
-| SA | FPB | F1 | 86.0 | 87.0 |
-| SA | FiQA-SA | F1 | 76.0 | 79.0 |
-| HC | Gold Headlines | Acc | - | - |
-| QA | FinQA | EM | 14.65 | 4.0 |
-| QA | ConvFinQA | EM | 40.40 | 20.0 |
-| SMP | Combined | Acc | 57.55 | 54.5 |
-| NER | Fin Agreements | F1 | 69 | 69.0 |
+| Task | Dataset | Metric | Our QLoRA | BloombergGPT | ChatGPT | GPT-4 |
+|------|---------|--------|-----------|--------------|---------|-------|
+| **SA** | FPB | Accuracy | 84.23% | 86.0% | 78.0% | 78.0% |
+| **SA** | FiQA-SA | Accuracy | 83.83% | 84.0% | - | - |
+| **HC** | Headlines | Accuracy | **92.75%** | 82.0% | 77.0% | 86.0% |
+| **NER** | FLARE-NER | Entity-F1 | 58.13% | 61.0% | 77.0% | 83.0% |
+| **QA** | FinQA | EM | 12.03% | - | 58.0% | 63.0% |
+| **QA** | ConvFinQA | EM | 40.13% | 43.0% | 60.0% | 76.0% |
+| **SMP** | CIKM18 | Accuracy | 56.08% | - | 55.0% | 57.0% |
+| **SMP** | BigData22 | Accuracy | 54.96% | - | 53.0% | 54.0% |
+
+*Baseline results from Wu et al. (2023), Li et al. (2023), and Xie et al. (2023)*
 
 ### Efficiency Metrics
 
@@ -355,8 +298,8 @@ datasets:
 lora:
   r: 8
   alpha: 16
-  dropout: 0.1
-  target_modules: ["q_proj", "v_proj"]
+  dropout: 0.05
+  target_modules: ["q_proj", "k_proj", "v_proj", "o_proj"]
 
 training:
   epochs: 3
@@ -389,4 +332,4 @@ Analysis},
 
 ---
 
-**Note**: Training times are approximate and depend on GPU hardware (tested on A100 40GB or plus is preferable).
+**Note**: Training times are approximate and depend on batch size and GPU hardware (tested on A100 40GB or plus is preferable).
