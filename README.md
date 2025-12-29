@@ -647,9 +647,6 @@ We welcome contributions! Please:
 - **Abdel Kader Younoussi Saley** - saley.younoussi@aims.ac.rw (AIMS Rwanda)
 - **Aklilu Zeleke** - zeleke@msu.edu (Michigan State University)
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
