@@ -50,7 +50,7 @@ Efficient-Financial-NLP-Fine-Tuning-with-QLoRA/
 │   │   └── smp/merged/                # Stock-CIKM + Stock-BigData
 │   ├── dataset_config.json            # Dataset mappings & specifications
 │   ├── llama_template.txt             # Llama 3.1 chat template
-│   └── metadata.json                  # Dataset statistics (auto-generated)
+│   └── metadata.json                  # Dataset statistics
 │
 ├── src/
 │   ├── data/
@@ -58,32 +58,32 @@ Efficient-Financial-NLP-Fine-Tuning-with-QLoRA/
 │   ├── models/
 │   │   └── qlora_model.py             # QLoRA with 4-bit quantization
 │   ├── training/
-│   │   ├── trainer.py                 # TaskTrainer for single-task training
-│   │   └── callbacks.py               # Monitoring callbacks
+│   │   ├── trainer.py                 
+│   │   └── callbacks.py               
 │   ├── evaluation/
 │   │   └── evaluator.py               # SOTA-comparable evaluation metrics
 │   └── utils/
-│       └── training_monitor.py        # Real-time metrics tracking
+│       └── training_monitor.py       
 │
 ├── scripts/
 │   ├── train.py                       # Train single task
 │   ├── train_all.py                   # Batch training (all tasks)
 │   ├── eval_model.py                  # Evaluate single task
-│   ├── eval_all_models.py             # Batch evaluation
+│   ├── eval_all_models.py             
 │   └── verify_datasets.py             # Dataset format validation
 │
 ├── outputs/
-│   ├── adapters/                      # Trained LoRA adapters (~27MB each)
+│   ├── adapters/                      # Trained LoRA adapters
 │   │   ├── sa_adapter/
 │   │   ├── hc_adapter/
 │   │   ├── ner_adapter/
 │   │   ├── qa_adapter/
 │   │   └── smp_adapter/
 │   ├── evaluations/                   # Evaluation results (JSON)
-│   └── logs/                          # Training logs & metrics
+│   └── logs/                          
 │
-├── requirements.txt                   # Python dependencies
-└── README.md                          # This file
+├── requirements.txt                   #
+└── README.md                         
 ```
 
 ## 🚀 Quick Start
@@ -464,7 +464,7 @@ print(tokenizer.decode(outputs[0], skip_special_tokens=True))
 # Output: positive
 ```
 
-## 🔧 Advanced Configuration
+## Configuration
 
 ### Model Configuration (`configs/model_config.yaml`)
 
@@ -540,7 +540,7 @@ positive<|eot_id|>
 | SMP | Stock-CIKM | 3,396 | 1,143 | 1,579 | 1,752 | 1,800 | 2.7 |
 | SMP | Stock-BigData | 4,897 | 1,472 | 1,513 | 1,685 | 1,800 | 0.6 |
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Out of Memory (OOM)
 
@@ -630,16 +630,6 @@ If you use this code or our results in your research, please cite our paper:
   year={2023}
 }
 ```
-
-## 🤝 Contributing
-
-We welcome contributions! Please:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/YourFeature`)
-3. Commit your changes (`git commit -m 'Add YourFeature'`)
-4. Push to the branch (`git push origin feature/YourFeature`)
-5. Open a Pull Request
 
 ## 📧 Contact
 
