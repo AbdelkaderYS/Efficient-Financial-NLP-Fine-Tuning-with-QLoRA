@@ -647,6 +647,4 @@ If you use this code or our results in your research, please cite our paper:
 
 ---
 
-**Paper Status:** Submitted to Conference (2025)
-**Code:** [GitHub Repository](https://github.com/AbdelkaderYS/Efficient-Financial-NLP-Fine-Tuning-with-QLoRA)
-**Last Updated:** December 2024
+**Paper Status:** Submitted to Conference ICMLT Conference in Berlin (2026)
